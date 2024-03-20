@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MyRESTServices.BLL.DTOs;
 using MyRESTServices.BLL.Interfaces;
+using MyRESTServices.Data;
 using MyRESTServices.Data.Interfaces;
+using MyRESTServices.Domain.Models;
 
 namespace MyRESTServices.BLL
 {
@@ -21,51 +23,66 @@ namespace MyRESTServices.BLL
 			_mapper = mapper;
 		}
 
-		public Task<bool> Delete(int id)
+		public async Task<bool> Delete(int id)
 		{
-			throw new NotImplementedException();
+			return await _articleData.Delete(id);
 		}
 
-		public Task<IEnumerable<ArticleDTO>> GetArticleByCategory(int categoryId)
+		public async Task<IEnumerable<ArticleDTO>> GetArticleByCategory(int categoryId)
 		{
-			throw new NotImplementedException();
+			var articles = await _articleData.GetArticleByCategory(categoryId);
+			var articlesDto = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
+			return articlesDto;
 		}
 
-		public Task<ArticleDTO> GetArticleById(int id)
+		public async Task<ArticleDTO> GetArticleById(int id)
 		{
-			throw new NotImplementedException();
+			var article = await _articleData.GetById(id);
+			var articlesDto = _mapper.Map<ArticleDTO>(article);
+			return articlesDto;
 		}
 
 		public async Task<IEnumerable<ArticleDTO>> GetArticleWithCategory()
 		{
-			var articles = await _articleData.GetAll();
-			var articlesDto = _mapper.Map<ArticleDTO>(articles);
-			return (IEnumerable<ArticleDTO>)articlesDto;
+			var articles = await _articleData.GetArticleWithCategory();
+			var articlesDto = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
+			return articlesDto;
 		}
 
-		public Task<int> GetCountArticles()
+		public async Task<int> GetCountArticles()
 		{
-			throw new NotImplementedException();
+			return await _articleData.GetCountArticles();
 		}
 
-		public Task<IEnumerable<ArticleDTO>> GetWithPaging(int categoryId, int pageNumber, int pageSize)
+		public async Task<IEnumerable<ArticleDTO>> GetWithPaging(int categoryId, int pageNumber, int pageSize)
 		{
-			throw new NotImplementedException();
+			var articles = await _articleData.GetWithPaging(categoryId ,pageNumber, pageSize);
+			var articlesDto = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
+			return articlesDto;
 		}
 
-		public Task<ArticleDTO> Insert(ArticleCreateDTO article)
+		public async Task<ArticleDTO> Insert(ArticleCreateDTO article)
 		{
-			throw new NotImplementedException();
+			var entity = _mapper.Map<Article>(article);
+			var insertedArticle = await _articleData.Insert(entity);
+			var insertedArticleDto = _mapper.Map<ArticleDTO>(insertedArticle);
+			return insertedArticleDto;
 		}
 
-		public Task<int> InsertWithIdentity(ArticleCreateDTO article)
+		public async Task<int> InsertWithIdentity(ArticleCreateDTO article)
 		{
-			throw new NotImplementedException();
+			var entity = _mapper.Map<Article>(article);
+			var insertedArticle = await _articleData.Insert(entity);
+			var insertedArticleDto = _mapper.Map<ArticleDTO>(insertedArticle);
+			return insertedArticleDto.ArticleID;
 		}
 
-		public Task<ArticleDTO> Update(ArticleUpdateDTO article)
+		public async Task<ArticleDTO> Update(ArticleUpdateDTO article)
 		{
-			throw new NotImplementedException();
+			var entity = _mapper.Map<Article>(article);
+			var updatedArticle = await _articleData.Update(entity.ArticleId, entity);
+			var updatedCategoryDto = _mapper.Map<ArticleDTO>(updatedArticle);
+			return updatedCategoryDto;
 		}
 	}
 }
