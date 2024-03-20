@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using MyRESTServices.BLL.DTOs;
 using MyRESTServices.BLL.Interfaces;
 
@@ -11,9 +12,13 @@ namespace MyRESTServices.Controllers
 	public class ArticlesController : ControllerBase
 	{
 		private readonly IArticleBLL _articleBLL;
-		public ArticlesController(IArticleBLL articleBLL)
+		private readonly IValidator<ArticleCreateDTO> _validatorArticleCreate;
+		private readonly IValidator<ArticleUpdateDTO> _validatorArticleUpdate;
+		public ArticlesController(IArticleBLL articleBLL, IValidator<ArticleCreateDTO> validatorArticleCreate, IValidator<ArticleUpdateDTO> validatorArticleUpdate)
 		{
 			_articleBLL = articleBLL;
+			_validatorArticleCreate = validatorArticleCreate;
+			_validatorArticleUpdate = validatorArticleUpdate;
 		}
 
 		// GET: api/<ArticlesController>
@@ -23,6 +28,14 @@ namespace MyRESTServices.Controllers
 			var results = await _articleBLL.GetArticleWithCategory();
 			return results;
 		}
+
+		[HttpGet("Count")]
+		public async Task<int> GetCount()
+		{
+			var results = await _articleBLL.GetCountArticles();
+			return results;
+		}
+
 		[HttpGet("Category/{id}")]
 		public async Task<IEnumerable<ArticleDTO>> GetbyCategory(int id)
 		{
@@ -40,7 +53,7 @@ namespace MyRESTServices.Controllers
 
 		// POST api/<ArticlesController>
 		[HttpPost]
-		public IActionResult Post(ArticleCreateDTO articleCreateDTO)
+		public async Task<IActionResult> Post(ArticleCreateDTO articleCreateDTO)
 		{
 			if (articleCreateDTO == null)
 			{
@@ -49,6 +62,12 @@ namespace MyRESTServices.Controllers
 
 			try
 			{
+				var validatorResult = await _validatorArticleCreate.ValidateAsync(articleCreateDTO);
+				if (!validatorResult.IsValid)
+				{
+					Helpers.Extensions.AddToModelState(validatorResult, ModelState);
+					return BadRequest(ModelState);
+				}
 				_articleBLL.Insert(articleCreateDTO);
 				return Ok("Insert data success");
 			}
@@ -60,7 +79,7 @@ namespace MyRESTServices.Controllers
 
 		// PUT api/<ArticlesController>/5
 		[HttpPut("{id}")]
-		public IActionResult Put(int id, ArticleUpdateDTO articleUpdateDTO)
+		public async Task<IActionResult> Put(int id, ArticleUpdateDTO articleUpdateDTO)
 		{
 			if (_articleBLL.GetArticleById(id) == null)
 			{
@@ -69,6 +88,12 @@ namespace MyRESTServices.Controllers
 
 			try
 			{
+				var validatorResult = await _validatorArticleUpdate.ValidateAsync(articleUpdateDTO);
+				if (!validatorResult.IsValid)
+				{
+					Helpers.Extensions.AddToModelState(validatorResult, ModelState);
+					return BadRequest(ModelState);
+				}
 				_articleBLL.Update(articleUpdateDTO);
 				return Ok("Update data success");
 			}

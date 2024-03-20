@@ -37,6 +37,9 @@ builder.Services.AddScoped<IArticleBLL, ArticleBLL>();
 //automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddValidatorsFromAssemblyContaining<CategoryCreateDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryUpdateDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ArticleCreateDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ArticleUpdateDTOValidator>();
 
 
 var app = builder.Build();
