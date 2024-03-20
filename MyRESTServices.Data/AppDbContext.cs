@@ -18,9 +18,9 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<City> Cities { get; set; }
+    // public virtual DbSet<City> Cities { get; set; }
 
-    public virtual DbSet<Country> Countries { get; set; }
+    // public virtual DbSet<Country> Countries { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -43,12 +43,12 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_Articles_Users");
         });
 
-        modelBuilder.Entity<City>(entity =>
-        {
-            entity.HasOne(d => d.Country).WithMany(p => p.Cities)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Cities_Countries");
-        });
+        // modelBuilder.Entity<City>(entity =>
+        // {
+        //     entity.HasOne(d => d.Country).WithMany(p => p.Cities)
+        //         .OnDelete(DeleteBehavior.ClientSetNull)
+        //         .HasConstraintName("FK_Cities_Countries");
+        // });
 
         modelBuilder.Entity<Role>(entity =>
         {

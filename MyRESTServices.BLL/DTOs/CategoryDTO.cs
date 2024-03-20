@@ -1,4 +1,6 @@
-﻿namespace MyRESTServices.BLL.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MyRESTServices.BLL.DTOs
 {
     public class CategoryDTO
     {

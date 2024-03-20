@@ -22,14 +22,10 @@ namespace MyRESTServices.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<CategoryDTO> Get(int id)
         {
-            var result = _categoryBLL.GetById(id);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
+            var result = await _categoryBLL.GetById(id);
+            return result;
         }
 
         [HttpPost]
